@@ -1,0 +1,46 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Автосервис AutoCom";
+}
+
+<div class="container mt-5">
+    <div class="p-5 mb-4 bg-light rounded-3 shadow-sm border">
+        <div class="container-fluid py-5 text-center">
+            <h1 class="display-5 fw-bold text-primary">Добро пожаловать в AutoCom</h1>
+            <p class="col-md-12 fs-4 text-muted">
+                Профессиональное обслуживание вашего автомобиля. 
+                Следите за историей ремонтов и записывайтесь на сервис онлайн в личном кабинете.
+            </p>
+            
+            <div class="mt-4">
+                <a asp-page="/Account/Login" class="btn btn-primary btn-lg px-4 me-md-2">Вход для клиентов</a>
+                <a asp-page="/Account/Register" class="btn btn-outline-secondary btn-lg px-4">Стать клиентом</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 py-5 row-cols-1 row-cols-lg-3 text-center">
+        <div class="feature col">
+            <div class="feature-icon d-inline-flex align-items-center justify-content-center text-primary fs-2 mb-3">
+                <i class="bi bi-tools"></i>
+            </div>
+            <h3>Качественный ремонт</h3>
+            <p>Используем только проверенные запчасти и современное оборудование.</p>
+        </div>
+        <div class="feature col">
+            <div class="feature-icon d-inline-flex align-items-center justify-content-center text-primary fs-2 mb-3">
+                <i class="bi bi-clock-history"></i>
+            </div>
+            <h3>История обслуживания</h3>
+            <p>Все заказ-наряды и замененные детали сохраняются в вашем личном кабинете.</p>
+        </div>
+        <div class="feature col">
+            <div class="feature-icon d-inline-flex align-items-center justify-content-center text-primary fs-2 mb-3">
+                <i class="bi bi-shield-check"></i>
+            </div>
+            <h3>Гарантия</h3>
+            <p>Предоставляем гарантию на все виды работ и установленные комплектующие.</p>
+        </div>
+    </div>
+</div>

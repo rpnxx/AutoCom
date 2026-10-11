@@ -1,0 +1,91 @@
+@page
+@model AutoComWeb.Pages.Client.IndexModel
+@{
+    ViewData["Title"] = "Личный кабинет";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body text-center">
+                    @if (Model.ClientInfo != null)
+                    {
+                        <h4>@Model.ClientInfo.LastName @Model.ClientInfo.FirstName</h4>
+                        <p class="text-muted">Клиент автосервиса</p>
+                        <hr>
+                        <div class="text-start">
+                            <p><strong>Телефон:</strong> @Model.ClientInfo.Phone</p>
+                            <p><strong>Email:</strong> @(string.IsNullOrEmpty(@Model.ClientInfo.Email) ? "Не указан" : @Model.ClientInfo.Email)</p>
+                        </div>
+                        <div class="mt-3">
+                            <a asp-page="/Client/EditProfile" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-pencil-square"></i> Редактировать профиль
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            Профиль еще не заполнен. Обратитесь к администратору.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            @if(TempData["ErrorMessage"] != null){
+                <div class="alert alert-danger mb-3">
+                    @TempData["ErrorMessage"]
+                    
+                </div>
+            }
+            @if(TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success mb-3">
+                    @TempData["SuccessMessage"]
+                </div>
+            }
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3>Мой гараж</h3>
+                <a asp-page="/Client/AddVehicle" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-plus-circle"></i> Добавить автомобиль
+                </a>
+            </div>
+
+            @if (Model.Vehicles.Any())
+            {
+                <div class="row row-cols-1 row-cols-md-2 g-3">
+                    @foreach (var car in Model.Vehicles)
+                    {
+                        <div class="col">
+                            <div class="card h-100 shadow-sm border-start border-primary border-4">
+                                <div class="card-body">
+                                    <h5 class="card-title">@car.Brand @car.Model</h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">@car.NumberPlate</h6>
+                                    <p class="card-text small">Год выпуска: @car.Year</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <a href="#" class="btn btn-sm btn-light">История ремонтов</a>
+                                        <form method="post" asp-page-handler="Delete" asp-route-vehicleId="@car.VehicleId" 
+                                             onsubmit="return confirm('Вы уверены, что хотите удалить @car.Brand из гаража?');">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                Удалить
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="card bg-light border-0 py-5 text-center">
+                    <p class="text-muted">В вашем гараже пока нет автомобилей.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>

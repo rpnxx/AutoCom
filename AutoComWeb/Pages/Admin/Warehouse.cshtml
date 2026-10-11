@@ -1,0 +1,209 @@
+@page
+@model AutoComWeb.Pages.Admin.WarehouseModel
+@{
+    ViewData["Title"] = "Склад запчастей";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-box-seam text-warning"></i> Склад запчастей</h2>
+        <a asp-page="/Admin/Index" class="btn btn-outline-secondary btn-sm">В панель</a>
+    </div>
+
+    <div class="card mb-4 border-0 shadow-sm">
+        <div class="card-body">
+            <form method="get" class="row g-2">
+                <div class="col-md-10">
+                    <input type="text" name="SearchTerm" asp-for="SearchTerm" class="form-control" placeholder="Поиск по названию или артикулу..." />
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-dark w-100"><i class="bi bi-search"></i> Найти</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @if (Model.Message != null)
+    {
+        <div class="alert alert-@Model.MessageType alert-dismissible fade show">
+            @Model.Message
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 sticky-top" style="top: 20px;">
+                <div class="card-header bg-warning text-dark py-3">
+                    <h5 class="mb-0" id="formTitle">@(Model.EditingId > 0 ? "Редактирование" : "Приход на склад")</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" asp-page-handler="Save" id="warehouseForm" novalidate>
+                        <input type="hidden" asp-for="EditingId" id="editingId" />
+                        
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label fw-bold">Наименование</label>
+                            <input asp-for="Name" id="inputName" class="form-control" placeholder="Например: Масляный фильтр" />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Article" class="form-label fw-bold">Артикул (SKU)</label>
+                            <input asp-for="Article" id="inputArticle" class="form-control" placeholder="Например: W712/94" style="text-transform: uppercase;" />
+                            <span asp-validation-for="Article" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label asp-for="Price" class="form-label fw-bold">Цена (₽)</label>
+                                <input asp-for="Price" id="inputPrice" class="form-control" type="number" step="1" />
+                                <span asp-validation-for="Price" class="text-danger small"></span>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label asp-for="Quantity" class="form-label fw-bold">Кол-во (шт)</label>
+                                <input asp-for="Quantity" id="inputQty" class="form-control" type="number" step="1" />
+                                <span asp-validation-for="Quantity" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-2">
+                            <button type="submit" id="submitBtn" class="btn btn-warning">Добавить на склад</button>
+                            <button type="button" id="cancelBtn" class="btn btn-light" style="display:none;" onclick="resetForm()">Отмена</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Артикул</th>
+                                <th>Наименование</th>
+                                <th>Цена</th>
+                                <th class="text-center">Остаток</th>
+                                <th class="text-end">Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.SparePartsList.Any())
+                            {
+                                @foreach (var p in Model.SparePartsList)
+                                {
+                                    <tr>
+                                        <td><span class="badge bg-dark">@p.Article</span></td>
+                                        <td><strong>@p.Name</strong></td>
+                                        <td>@p.Price.ToString("C0", new System.Globalization.CultureInfo("ru-RU"))</td>
+                                        
+                                        <td class="text-center">
+                                            @if (p.Quantity <= 0)
+                                            {
+                                                <span class="badge bg-danger rounded-pill px-3 py-2">Нет в наличии</span>
+                                            }
+                                            else if (p.Quantity <= 3)
+                                            {
+                                                <span class="badge bg-warning text-dark rounded-pill px-3 py-2">@p.Quantity шт. (Мало)</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-success rounded-pill px-3 py-2">@p.Quantity шт.</span>
+                                            }
+                                        </td>
+                                        
+                                        <td class="text-end">
+                                            <button class="btn btn-sm btn-outline-primary" 
+                                                    onclick="editPart(@p.SparePartsId, '@p.Name', '@p.Article', @p.Price.ToString(System.Globalization.CultureInfo.InvariantCulture), @p.Quantity)">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            
+                                            <form method="post" asp-page-handler="Delete" asp-route-id="@p.SparePartsId" asp-route-SearchTerm="@Model.SearchTerm" class="d-inline"
+                                                  onsubmit="return confirm('Удалить деталь со склада?')">
+                                                <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted p-4">
+                                        <i class="bi bi-box fs-2 d-block mb-2"></i>
+                                        Склад пуст или детали не найдены
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(function () {
+            var form = $('form')[0];
+            if (form) {
+                var validator = $.data(form, 'validator');
+                if (validator) {
+                    validator.settings.onfocusout = false;
+                    validator.settings.onkeyup = false;
+                    validator.settings.onclick = false;
+                }
+            }
+        });
+        const partsDict = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            Model.SparePartsList.ToDictionary(
+                p => p.Article.ToUpper(), 
+                p => new { name = p.Name, price = p.Price }
+            )
+        ));
+        document.getElementById('inputArticle').addEventListener('input', function (e) {
+            this.value = this.value.replace(/[^a-zA-Z0-9\-\/]/g, '');
+            let article = e.target.value.trim().toUpperCase();
+            if (partsDict[article]) {
+                // Автоматически заполняем Имя и Цену
+                document.getElementById('inputName').value = partsDict[article].name;
+                document.getElementById('inputPrice').value = partsDict[article].price;
+                
+                // Подсвечиваем поле имени нежно-зеленым цветом, показывая, что система всё поняла
+                document.getElementById('inputName').style.backgroundColor = '#e8f5e9';
+                document.getElementById('inputName').readOnly = true; // Запрещаем менять имя существующей детали
+            } else {
+                // Если артикул новый, возвращаем поля в обычное состояние
+                document.getElementById('inputName').style.backgroundColor = '';
+                document.getElementById('inputName').readOnly = false;
+            }
+        });
+
+        function editPart(id, name, article, price, qty) {
+            document.getElementById('editingId').value = id;
+            document.getElementById('inputName').value = name;
+            document.getElementById('inputArticle').value = article;
+            document.getElementById('inputPrice').value = price;
+            document.getElementById('inputQty').value = qty;
+            
+            document.getElementById('formTitle').innerText = 'Редактирование детали';
+            document.getElementById('submitBtn').innerText = 'Сохранить изменения';
+            document.getElementById('cancelBtn').style.display = 'block';
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetForm() {
+            document.getElementById('warehouseForm').reset();
+            document.getElementById('editingId').value = '';
+            document.getElementById('formTitle').innerText = 'Приход на склад';
+            document.getElementById('submitBtn').innerText = 'Добавить на склад';
+            document.getElementById('cancelBtn').style.display = 'none';
+            document.getElementById('inputName').style.backgroundColor = '';
+            document.getElementById('inputName').readOnly = false;
+        }
+    </script>
+}

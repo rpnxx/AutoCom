@@ -1,0 +1,57 @@
+@page
+@model AutoComWeb.Pages.Admin.IndexModel
+@{
+    ViewData["Title"] = "Панель управления";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Панель Администратора</h2>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 border-primary">
+                <div class="card-body text-center">
+                    <i class="bi bi-card-list text-primary mb-3" style="font-size: 2.5rem;"></i>
+                    <h5 class="card-title">Прайс-лист (Услуги)</h5>
+                    <p class="card-text text-muted">Управление списком услуг автосервиса и их стоимостью.</p>
+                    <a asp-page="/Admin/Services" class="btn btn-outline-primary">Перейти</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 border-info">
+                <div class="card-body text-center">
+                    <i class="bi bi-box-seam text-info mb-3" style="font-size: 2.5rem;"></i>
+                    <h5 class="card-title">Склад запчастей</h5>
+                    <p class="card-text text-muted">Управление наличием, ценами и артикулами комплектующих.</p>
+                    <a asp-page="/Admin/Warehouse" class="btn btn-outline-info">Перейти</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 border-success">
+                <div class="card-body text-center">
+                    <i class="bi bi-people text-success mb-3" style="font-size: 2.5rem;"></i>
+                    <h5 class="card-title">Персонал</h5>
+                    <p class="card-text text-muted">Добавление и редактирование информации о механиках.</p>
+                    <a asp-page="/Admin/Mechanics" class="btn btn-outline-success">Перейти</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 border-warning">
+                <div class="card-body text-center">
+                    <i class="bi bi-tools text-warning mb-3" style="font-size: 2.5rem;"></i>
+                    <h5 class="card-title">Заказ-наряды</h5>
+                    <p class="card-text text-muted">Управление текущими ремонтами и расписанием.</p>
+                    <a href="#" class="btn btn-outline-warning">Перейти</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

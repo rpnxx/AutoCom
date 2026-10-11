@@ -1,0 +1,59 @@
+@page
+@model AutoComWeb.Pages.Account.RegisterModel
+@{
+    ViewData["Title"] = "Регистрация";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <h3 class="text-center mb-4">Регистрация клиента</h3>
+
+                @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @Model.ErrorMessage
+                    </div>
+                }
+
+                <form method="post">
+<div class="mb-3">
+    <label asp-for="FirstName" class="form-label text-muted">Имя</label>
+    <input asp-for="FirstName" class="form-control form-control-lg" placeholder="Иван" required />
+</div>
+
+<div class="mb-3">
+    <label asp-for="LastName" class="form-label text-muted">Фамилия</label>
+    <input asp-for="LastName" class="form-control form-control-lg" placeholder="Иванов" required />
+</div>
+
+<div class="mb-3">
+    <label asp-for="Phone" class="form-label text-muted">Номер телефона</label>
+    <input asp-for="Phone" class="form-control form-control-lg" placeholder="+7 (999) 000-00-00" required />
+</div>
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label text-muted">Пароль</label>
+                        <input asp-for="Password" type="password" class="form-control form-control-lg" required />
+                    </div>
+                    <div class="mb-4">
+                        <label asp-for="ConfirmPassword" class="form-label text-muted">Повторите пароль</label>
+                        <input asp-for="ConfirmPassword" type="password" class="form-control form-control-lg" required />
+                    </div>
+<div class="d-grid gap-2">
+    <button type="submit" class="btn btn-success btn-lg">Зарегистрироваться</button>
+</div>
+
+
+<!-- TODO: Добавить валидацию полей -->
+<!-- TODO: Добавить маску для телефона -->
+<!-- TODO: Добавить проверку на уникальность телефона -->
+                </form>
+                
+                <div class="text-center mt-3">
+                    <a asp-page="/Account/Login" class="text-decoration-none">Уже есть аккаунт? Войти</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,20 @@
+﻿# .NET build artifacts
+**/bin/
+**/obj/
+.vs/
+.vscode/
+
+# Local databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs and publish output
+*.log
+**/publish/
+**/artifacts/
+
+# Local secrets
+**/appsettings.Development.json
+.env
+.env.*
